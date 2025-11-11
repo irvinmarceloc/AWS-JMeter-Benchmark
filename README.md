@@ -2,23 +2,45 @@
 
 Este proyecto provee la infraestructura como código (IaC) y la configuración necesaria para desplegar un entorno de benchmarking de rendimiento en AWS utilizando Terraform y Ansible. El objetivo es facilitar la creación de un servidor de aplicaciones y un cliente JMeter para realizar pruebas de carga.
 
+## Tecnologías a Comparar
+
+Este entorno está diseñado para comparar el rendimiento de diferentes tecnologías de backend. El servidor de aplicaciones está configurado para soportar:
+
+-   **Java**: A través de Spring Boot.
+-   **Python**: Usando un framework como Flask o FastAPI.
+-   **Go**: Con el paquete `net/http` estándar o un framework como Gin.
+
 ## Estructura del Proyecto
 
-- `terraform/`: Contiene los archivos de Terraform para provisionar la infraestructura en AWS.
-  - `modules/`: Módulos reutilizables de Terraform (networking, compute, database).
-  - `terraform.tfvars`: Variables de configuración sensibles (NO SUBIR A GIT).
-  - `terraform.tfvars.example`: Ejemplo de `terraform.tfvars`.
-  - `inventory.tpl`: Plantilla para el inventario de Ansible.
-  - `inventory.tpl.example`: Ejemplo de `inventory.tpl`.
-- `ansible/`: Contiene los playbooks y roles de Ansible para configurar las instancias EC2.
-  - `roles/`: Roles de Ansible para configuración común, cliente JMeter y servidor de aplicaciones.
+-   `terraform/`: Contiene los archivos de Terraform para provisionar la infraestructura en AWS.
+    -   `modules/`: Módulos reutilizables de Terraform (networking, compute, database).
+    -   `terraform.tfvars`: Variables de configuración sensibles (NO SUBIR A GIT).
+    -   `terraform.tfvars.example`: Ejemplo de `terraform.tfvars`.
+    -   `inventory.tpl`: Plantilla para el inventario de Ansible.
+    -   `inventory.tpl.example`: Ejemplo de `inventory.tpl`.
+-   `ansible/`: Contiene los playbooks y roles de Ansible para configurar las instancias EC2.
+    -   `roles/`: Roles de Ansible para configuración común, cliente JMeter y servidor de aplicaciones.
+
+## Instalación de Ansible
+
+Ansible se encarga de configurar las instancias EC2 una vez que han sido creadas por Terraform. El playbook de Ansible (`playbook.yml`) ejecuta los siguientes roles:
+
+-   **common**:
+    -   Actualiza la caché de paquetes APT.
+    -   Instala paquetes comunes como `apt-transport-https`, `ca-certificates`, `curl`, `gnupg` y `unzip`.
+-   **jmeter_client**:
+    -   Instala OpenJDK 17.
+    -   Descarga y descomprime Apache JMeter 5.6.3 en `/opt/`.
+    -   Crea un enlace simbólico a JMeter en `/usr/local/bin/jmeter`.
+-   **app_server**:
+    -   Instala OpenJDK 17, Go, Python 3, pip y venv.
 
 ## Pre-requisitos
 
-- [Terraform](https://www.terraform.io/downloads.html) instalado.
-- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) instalado.
-- Credenciales de AWS configuradas (CLI de AWS o variables de entorno).
-- Un par de claves SSH de AWS existente y configurado para acceso a las instancias EC2.
+-   [Terraform](https://www.terraform.io/downloads.html) instalado.
+-   [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) instalado.
+-   Credenciales de AWS configuradas (CLI de AWS o variables de entorno).
+-   Un par de claves SSH de AWS existente y configurado para acceso a las instancias EC2.
 
 ## Configuración Inicial
 

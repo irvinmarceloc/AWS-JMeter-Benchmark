@@ -1,9 +1,9 @@
-
 # Terraform
 **/.terraform/
 *.tfstate
 *.tfstate.*
 *.tfvars
+*.tpl
 .terraform.lock.hcl
 
 # Ansible
@@ -23,3 +23,6 @@ Thumbs.db
 *.csv
 *.xml
 *.jtl
+
+# VSCode
+.vscode/
