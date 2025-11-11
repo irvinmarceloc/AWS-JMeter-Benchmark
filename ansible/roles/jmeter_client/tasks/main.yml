@@ -1,0 +1,14 @@
+- name: Instalar Java (requerido por JMeter)
+  ansible.builtin.apt:
+    name: openjdk-17-jdk
+    state: present
+    update_cache: yes
+
+- name: Descargar y descomprimir Apache JMeter 5.6.3
+  ansible.builtin.unarchive:
+    src: "https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz"
+    dest: /opt/
+    remote_src: yes
+    creates: /opt/apache-jmeter-5.6.3/
+  notify:
+    - Crear enlace simbólico de JMeter

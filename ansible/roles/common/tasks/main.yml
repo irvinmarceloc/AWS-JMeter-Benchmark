@@ -1,0 +1,14 @@
+- name: Actualizar cache de APT
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Instalar paquetes comunes
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - unzip
+    state: present

@@ -1,0 +1,25 @@
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform.lock.hcl
+
+# Ansible
+*.retry
+inventory/hosts.ini
+inventory.ini
+
+# Claves privadas
+*.pem
+
+# Archivos de Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Logs y outputs de JMeter
+*.log
+*.csv
+*.xml
+*.jtl

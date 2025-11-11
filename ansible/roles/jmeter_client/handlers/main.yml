@@ -1,0 +1,6 @@
+- name: Crear enlace simbólico de JMeter
+  ansible.builtin.file:
+    src: /opt/apache-jmeter-5.6.3/bin/jmeter
+    dest: /usr/local/bin/jmeter
+    state: link
+    mode: '0755'

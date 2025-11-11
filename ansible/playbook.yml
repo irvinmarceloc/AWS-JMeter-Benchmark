@@ -1,0 +1,17 @@
+- name: 1. Configurar todas las máquinas
+  hosts: all
+  become: yes
+  roles:
+    - common
+
+- name: 2. Configurar el Cliente JMeter
+  hosts: jmeter_clients
+  become: yes
+  roles:
+    - jmeter_client
+
+- name: 3. Configurar el Servidor de Aplicación
+  hosts: app_servers
+  become: yes
+  roles:
+    - app_server

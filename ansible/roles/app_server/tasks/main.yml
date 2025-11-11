@@ -1,0 +1,9 @@
+- name: Instalar dependencias para Spring Boot, Go y Python
+  ansible.builtin.apt:
+    name:
+      - openjdk-17-jdk
+      - golang-go
+      - python3-pip
+      - python3-venv
+    state: present
+    update_cache: yes
