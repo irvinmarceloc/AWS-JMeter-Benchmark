@@ -1,0 +1,36 @@
+---
+- name: 0. Esperar a que las instancias estén listas para SSH
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Esperar 300 segundos a que el puerto SSH (22) esté disponible
+      ansible.builtin.wait_for:
+        port: 22
+        host: '{{ ansible_host }}'
+        search_regex: OpenSSH
+        delay: 10
+        timeout: 300
+      connection: local
+
+# --- El resto de tu playbook sigue igual ---
+
+- name: 1. Configurar todas las máquinas
+  hosts: all
+  become: yes
+  roles:
+    - common
+
+- name: 2. Configurar el Cliente JMeter
+  hosts: jmeter_clients
+  become: yes
+  roles:
+    - jmeter_client
+    - deploy_jmeter_test
+
+- name: 3. Configurar el Servidor de Aplicación
+  hosts: app_servers
+  become: yes
+  roles:
+    - app_server
+    - db_setup
+    - deploy_spring_app

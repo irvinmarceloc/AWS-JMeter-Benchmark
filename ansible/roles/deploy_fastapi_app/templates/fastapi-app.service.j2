@@ -1,0 +1,22 @@
+[Unit]
+Description=FastAPI CRUD App
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/fastapi-crud
+
+# Pasa las variables de la BD a la aplicación
+Environment="DB_HOST={{ db_host | split(':') | first }}"
+Environment="DB_PORT={{ db_host | split(':') | last }}"
+Environment="DB_NAME={{ db_name }}"
+Environment="DB_USER={{ db_user }}"
+Environment="DB_PASSWORD={{ db_password }}"
+
+# Comando para ejecutar Uvicorn (servidor de Python)
+ExecStart=/usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 8000
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+[Unit]
+Description=Spring Boot CRUD App
+After=network.target
+
+[Service]
+User=ubuntu
+#
+Environment="DB_HOST={{ db_host | split(':') | first }}"
+Environment="DB_PORT={{ db_host | split(':') | last }}"
+#
+Environment="DB_NAME={{ db_name }}"
+Environment="DB_USER={{ db_user }}"
+Environment="DB_PASSWORD={{ db_password }}"
+#
+ExecStart=java -jar /opt/spring-crud.jar
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

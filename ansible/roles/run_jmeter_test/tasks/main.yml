@@ -1,0 +1,33 @@
+---
+- name: Eliminar resultados de pruebas anteriores
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /home/ubuntu/jmeter-results.jtl
+    - /home/ubuntu/jmeter-dashboard
+
+- name: Ejecutar la prueba de carga de JMeter
+  ansible.builtin.command: >
+    jmeter -n -t /home/ubuntu/test_plan.jmx -l /home/ubuntu/jmeter-results.jtl -e -o /home/ubuntu/jmeter-dashboard
+  register: jmeter_run
+  changed_when: jmeter_run.rc == 0
+
+- name: Informar si la prueba falló
+  ansible.builtin.fail:
+    msg: "JMeter falló al ejecutarse. Revisa los logs en el cliente."
+  when: jmeter_run.rc != 0
+
+- name: Crear directorio de resultados local
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/results"
+    state: directory
+  delegate_to: localhost
+  run_once: true
+
+- name: Descargar el dashboard de resultados
+  ansible.posix.synchronize:
+    mode: pull
+    src: /home/ubuntu/jmeter-dashboard/
+    # CAMBIO AQUÍ: Usa la variable 'app_name' para crear un subdirectorio
+    dest: "{{ playbook_dir }}/results/{{ app_name | default('default') }}-dashboard"

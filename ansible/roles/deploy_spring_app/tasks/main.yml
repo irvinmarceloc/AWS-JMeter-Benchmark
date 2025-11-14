@@ -1,0 +1,54 @@
+---
+# 1. Copia el código fuente del proyecto al servidor
+- name: Copiar el código fuente de Spring Boot
+  ansible.builtin.copy:
+    # La ruta es relativa al playbook (que está en ansible/)
+    src: ../projects/spring-boot-crud/
+    dest: /home/ubuntu/spring-boot-crud
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+# 2. Hacer que el Maven Wrapper sea ejecutable
+- name: Hacer ejecutable el Maven Wrapper
+  ansible.builtin.file:
+    path: /home/ubuntu/spring-boot-crud/mvnw
+    mode: '0755'
+  become: yes
+
+# 3. Construir el proyecto con Maven Wrapper
+- name: Construir el proyecto Spring Boot en el servidor
+  ansible.builtin.command:
+    cmd: ./mvnw clean package -DskipTests
+    chdir: /home/ubuntu/spring-boot-crud
+  become: yes
+  become_user: ubuntu
+
+# 4. Copiar el archivo de servicio systemd
+- name: Copiar el archivo de servicio systemd
+  ansible.builtin.template:
+    src: spring-app.service.j2
+    dest: /etc/systemd/system/spring-app.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+# 5. Mover el JAR construido a /opt/
+- name: Mover el JAR construido al directorio de /opt
+  ansible.builtin.copy:
+    src: /home/ubuntu/spring-boot-crud/target/spring-crud-0.0.1-SNAPSHOT.jar
+    dest: /opt/spring-crud.jar
+    owner: ubuntu
+    group: ubuntu
+    remote_src: yes # ¡Importante! le dice a Ansible que es una copia de servidor a servidor
+  become: yes
+
+# 6. Recargar systemd, habilitar e iniciar el servicio
+- name: Recargar systemd, habilitar e iniciar el servicio de la app
+  ansible.builtin.systemd:
+    daemon_reload: yes
+    name: spring-app
+    enabled: yes
+    state: restarted
+  become: yes

@@ -1,0 +1,10 @@
+---
+- name: Crear el script de prueba JMX a partir de la plantilla
+  ansible.builtin.template:
+    src: test_plan.jmx.j2
+    dest: /home/ubuntu/test_plan.jmx
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'
+  vars:
+    app_server_ip: "{{ hostvars[groups['app_servers'][0]]['ansible_default_ipv4']['address'] }}"

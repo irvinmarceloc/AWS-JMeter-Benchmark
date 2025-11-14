@@ -1,0 +1,18 @@
+---
+- name: Instalar cliente de PostgreSQL
+  ansible.builtin.apt:
+    name: postgresql-client
+    state: present
+
+- name: Copiar el script SQL de inicialización al servidor
+  ansible.builtin.copy:
+    src: init.sql
+    dest: /tmp/init.sql
+    mode: '0644'
+
+- name: Ejecutar el script SQL para crear tablas
+  ansible.builtin.command: >
+    psql "host={{ db_host | split(':') | first }} port={{ db_host | split(':') | last }} dbname={{ db_name }} user={{ db_user }}" -f /tmp/init.sql
+  environment:
+    PGPASSWORD: "{{ db_password }}"
+  changed_when: true

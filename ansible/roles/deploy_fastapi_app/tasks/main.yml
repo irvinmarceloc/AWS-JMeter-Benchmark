@@ -1,0 +1,31 @@
+---
+- name: Copiar el código fuente de FastAPI
+  ansible.builtin.copy:
+    src: ../../../projects/fastapi-crud/
+    dest: /home/ubuntu/fastapi-crud
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Instalar dependencias de Python (pip)
+  ansible.builtin.pip:
+    requirements: /home/ubuntu/fastapi-crud/requirements.txt
+    executable: pip3
+  become: yes
+
+- name: Copiar el archivo de servicio systemd de FastAPI
+  ansible.builtin.template:
+    src: fastapi-app.service.j2
+    dest: /etc/systemd/system/fastapi-app.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+- name: Recargar systemd, habilitar e iniciar el servicio FastAPI
+  ansible.builtin.systemd:
+    daemon_reload: yes
+    name: fastapi-app
+    enabled: yes
+    state: restarted
+  become: yes

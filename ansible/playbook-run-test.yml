@@ -1,0 +1,8 @@
+---
+- name: Ejecutar pruebas de carga en el cliente JMeter
+  hosts: jmeter_clients
+  roles:
+    # Pasa la variable 'app_name' (ej. spring-boot) al rol
+    - role: run_jmeter_test
+      vars:
+        app_name: "{{ app_name | default('test') }}"

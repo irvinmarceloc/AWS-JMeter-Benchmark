@@ -9,9 +9,11 @@
   become: yes
   roles:
     - jmeter_client
-
+    - deploy_jmeter_test
 - name: 3. Configurar el Servidor de Aplicación
   hosts: app_servers
   become: yes
   roles:
     - app_server
+    - db_setup
+    - deploy_spring_app
