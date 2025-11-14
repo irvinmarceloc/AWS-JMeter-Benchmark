@@ -26,3 +26,9 @@ Thumbs.db
 
 # VSCode
 .vscode/
+
+# SH
+*.sh
+
+# Results
+./ansible/results*/
